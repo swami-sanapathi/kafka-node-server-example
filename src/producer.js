@@ -30,9 +30,11 @@ const createTopicIfNotExist = async (topic) => {
         topic,
         numPartitions: PARTITIONS_COUNT,
         replicationFactor: BROKERS_COUNT - 1,
+        // configEntries: [{ name: "cleanup.policy", value: "compact" }], // which will be used to compact the logs for the topic
       },
     ],
   });
+  console.log(`Topic "${topic}" created.`);
   await admin.disconnect();
 };
 
@@ -40,16 +42,16 @@ const produceMessage = async (topic, info) => {
   // Create a producer
   const producer = kafkaClient(CLIENT_CODE).producer({
     allowAutoTopicCreation: false,
-    maxInFlightRequests: 1,
+    maxInFlightRequests: 1, // ask
   });
-
   await createTopicIfNotExist(topic);
+
   await producer.connect();
 
   // Send message to the topic
   const result = await producer.send({
     topic,
-    messages: [{ key: crypto.randomUUID(), value: JSON.stringify(info) }],
+    messages: [{ value: JSON.stringify(info) }],
   });
 
   console.log("Message sent:", result);
@@ -57,4 +59,4 @@ const produceMessage = async (topic, info) => {
 };
 
 // Call the function to produce a message
-produceMessage(TOPIC.LEAVE_GROUP, [{ number: 2 }]).catch(console.error);
+produceMessage(TOPIC.LEAVE_ACCRUAL, [{ number: 2 }]).catch(console.error);

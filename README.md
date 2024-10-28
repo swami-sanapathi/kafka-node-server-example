@@ -32,3 +32,8 @@ Answer: Then eb fn should do these tasks:
 [] update `EB:RULE_GROUPS` and `EB:ATTRIBUTE_RULE_GROUPS` cache when any rule changes
 [] make sure by adding eviction policy to the random key which was set by consumers while sending employees for evaluation purposes.
 [] maintain logs upon updating the cache and re-evaluation.
+
+
+## Message Eviction
+- Using Log Compaction - can be useful if you want to retain only the latest state for each key in the topic.
+        - LEAVE_GROUP: A001_COMPANY_CODE
