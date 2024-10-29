@@ -1,19 +1,3 @@
-1. Do we need to specify broker in kafka configuration?
-2. is `clientID` is required in kafka config?
-3. what is `replicationFactor` in topic config?
-4. do we need to specify `numPartitions` in topic config?
-5. do we need to specify `waitForLeaders` in topic config?
-6. what exactly the `allowAutoTopicCreation` in producer config?
-7. is redis having asynchronous and synchronous process?  
-8. what is the use of `timeout` in producer?
-9. what is consumer `group_id`? what is the use of it?
-10. `autoCommit` use in consumer?
-11. `readUncommitted` use in consumer?
-12. `fromBeginning` use in consumer subscribe?
-
-
-
-
 ## TODO
 Ask: Upon updating single attribute to an employee
 Answer: Then eb fn should do following tasks:
