@@ -2,51 +2,59 @@
 const { kafkaClient, TOPIC, CLIENT_CODE } = require("./consts/config");
 const { createTopicIfNotExist } = require("./topic");
 
-// Create a consumer
-const consumer = kafkaClient(CLIENT_CODE).consumer({
-  groupId: "cg-1",
-  allowAutoTopicCreation: false,
-});
-
 const consumeMessage = async (topic) => {
   try {
-    await createTopicIfNotExist(topic);
-    await consumer.connect();
+    const consumer = kafkaClient(CLIENT_CODE).consumer({
+      groupId: `cg-1-${topic}`, // Unique group ID for each topic
+      allowAutoTopicCreation: false,
+    });
 
-    // Subscribe to the topic
+    await consumer.connect();
+    await createTopicIfNotExist(topic);
     await consumer.subscribe({
       topic,
       fromBeginning: false,
     });
 
-    // Consume messages
     await consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        console.log("Message received, partition:", partition);
-        await sleep(3000);
-        console.log({
-          topic,
-          partition,
-          offset: message.offset,
-          timestamp: message.timestamp,
-          key: message.key?.toString(),
-          value: message.value?.toString(),
-          headers: message.headers,
-        });
+      eachMessage: async ({ partition, message }) => {
+        try {
+          console.log(
+            "Message received from topic:",
+            topic,
+            "partition:",
+            partition
+          );
+          await sleep(3000);
+          console.log({
+            topic,
+            partition,
+            offset: message.offset,
+            timestamp: message.timestamp,
+            key: message.key?.toString(),
+            value: message.value?.toString(),
+            headers: message.headers,
+          });
+        } catch (error) {
+          console.log("error -->", error);
+        }
       },
     });
   } catch (error) {
-    console.log("error -->", error);
+    console.error(`Error consuming topic ${topic}:`, error);
   }
 };
 
 function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve, reject) => setTimeout(reject, ms));
 }
 
-// Call the function to consume messages
-try {
-  consumeMessage(TOPIC.LEAVE_ACCRUAL).catch(console.error);
-} catch (error) {
-  console.log("error -->", error);
-}
+// Call the function to consume messages for each topic
+const startConsumers = async () => {
+  const consumerPromises = Object.values(TOPIC).map((topic) =>
+    consumeMessage(topic)
+  );
+  await Promise.all(consumerPromises);
+};
+
+startConsumers().catch(console.error);

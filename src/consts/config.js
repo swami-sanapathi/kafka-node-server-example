@@ -7,8 +7,9 @@ const CLIENT_ID = "CLIENT";
 const CLIENT_CODE = "REC";
 const PARTITIONS_COUNT = 3;
 const TOPIC = {
-  LEAVE_ACCRUAL: "d3-leave-accrual",
+  LEAVE_ACCRUAL: "leave-accrual",
   LEAVE_GROUP: "leave-group",
+  LEAVE_GROUP_EVALUATION: "leave-group-evaluation",
 };
 
 // Initialize Kafka Instance

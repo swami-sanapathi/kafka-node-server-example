@@ -51,7 +51,7 @@ const createTopicIfNotExist = async (topic) => {
         topic,
         numPartitions: PARTITIONS_COUNT,
         replicationFactor: BROKERS_COUNT > 1 ? BROKERS_COUNT : 1,
-        configEntries: [{ name: "retention.ms", value: "100" }], // 1 second
+        // configEntries: [{ name: "retention.ms", value: "100" }], // 1 second
         // configEntries: [{ name: "cleanup.policy", value: "compact" }], // which will be used to compact the logs for the topic
       },
     ],
